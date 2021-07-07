@@ -119,6 +119,8 @@ abstract class IHttpEndpoints {
   String userAvatarURL(Snowflake userId, String? avatarHash, int discriminator,
       {String format = "webp", int size = 128});
 
+  String memberAvatarURL(Snowflake memberId, Snowflake guildId, String avatarHash);
+
   Future<User> fetchUser(Snowflake userId);
 
   Future<void> editGuildMember(Snowflake guildId, Snowflake memberId,
@@ -1621,4 +1623,8 @@ class _HttpEndpoints implements IHttpEndpoints {
       return Future.error(response);
     }
   }
+
+  @override
+  String memberAvatarURL(Snowflake memberId, Snowflake guildId, String avatarHash) =>
+      throw UnimplementedError("No required docs are provided yet");
 }

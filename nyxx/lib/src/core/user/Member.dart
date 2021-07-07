@@ -26,13 +26,16 @@ class Member extends SnowflakeEntity implements Mentionable {
   late Iterable<Cacheable<Snowflake, Role>> roles;
 
   /// Highest role of member
-  late Cacheable<Snowflake, Role> hoistedRole;
-
-  /// Voice state of member. Null if not connected to channel or voice state not cached
-  VoiceState? get voiceState => this.guild.getFromCache()?.voiceStates[this.id];
+  late final Cacheable<Snowflake, Role> hoistedRole;
 
   /// When the user starting boosting the guild
   late DateTime? boostingSince;
+
+  /// Member's avatar in [Guild]
+  late final String? avatarHash;
+
+  /// Voice state of member. Null if not connected to channel or voice state not cached
+  VoiceState? get voiceState => this.guild.getFromCache()?.voiceStates[this.id];
 
   /// The channel's mention string.
   @override
@@ -60,6 +63,7 @@ class Member extends SnowflakeEntity implements Mentionable {
     this.user = _UserCacheable(client, this.id);
     this.guild = _GuildCacheable(client, guildId);
     this.boostingSince = DateTime.tryParse(raw["premium_since"] as String? ?? "");
+    this.avatarHash = raw["avatar"] as String?;
 
     this.roles = [
       for (var id in raw["roles"])
@@ -103,6 +107,15 @@ class Member extends SnowflakeEntity implements Mentionable {
     }
 
     return Permissions.fromInt(total);
+  }
+
+  /// Returns url to member avatar
+  String? avatarURL({String format = "webp", int size = 128}) {
+    if(this.avatarHash == null) {
+      return null;
+    }
+
+    return this.client.httpEndpoints.memberAvatarURL(this.id, this.guild.id, this.avatarHash!);
   }
 
   /// Bans the member and optionally deletes [deleteMessageDays] days worth of messages.
