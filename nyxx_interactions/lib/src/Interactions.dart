@@ -45,7 +45,7 @@ class Interactions {
 
     _client.onReady.listen((event) async {
       _client.shardManager.rawEvent.listen((event) {
-        if (event.rawData["op"] == _op0 && event.rawData["t"] == _interactionCreateCommand) {
+        if (event.rawData["op"] == OPCodes.dispatch && event.rawData["t"] == _interactionCreateCommand) {
           this._logger.fine("Received interaction event: [${event.rawData}]");
 
           final type = event.rawData["d"]["type"] as int;

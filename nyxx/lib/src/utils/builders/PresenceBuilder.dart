@@ -1,5 +1,34 @@
 part of nyxx;
 
+class ActivityBuilder implements Builder{
+  /// The activity name.
+  late final String name;
+
+  /// The activity type.
+  late final ActivityType type;
+
+  /// The game URL, if provided.
+  String? url;
+
+  /// Creates new instance of [ActivityBuilder]
+  ActivityBuilder(this.name, this.type, {this.url});
+
+  /// Sets activity to game
+  factory ActivityBuilder.game(String name) =>
+      ActivityBuilder(name, ActivityType.game);
+
+  /// Sets activity to streaming
+  factory ActivityBuilder.streaming(String name, String url) =>
+      ActivityBuilder(name, ActivityType.streaming, url: url);
+
+  @override
+  RawApiMap build() => {
+    "name": this.name,
+    "type": this.type.value,
+    if (this.type == ActivityType.streaming) "url": this.url,
+  };
+}
+
 /// Allows to build object of user presence used later when setting user presence.
 class PresenceBuilder extends Builder {
   /// Status of user.
@@ -9,7 +38,7 @@ class PresenceBuilder extends Builder {
   bool? afk;
 
   /// Type of activity.
-  Activity? game;
+  ActivityBuilder? activity;
 
   /// WHen activity was started
   DateTime? since;
@@ -18,34 +47,25 @@ class PresenceBuilder extends Builder {
   PresenceBuilder();
 
   /// Default builder constructor.
-  factory PresenceBuilder.of({UserStatus? status, bool? afk, Activity? game, DateTime? since}) =>
+  factory PresenceBuilder.of({UserStatus? status, ActivityBuilder? activity}) =>
       PresenceBuilder()
         ..status = status
-        ..afk = afk
-        ..game = game
-        ..since = since;
+        ..activity = activity;
 
-  /// Sets bot status to game type
-  factory PresenceBuilder.game({required String gameName, UserStatus? status}) =>
-      PresenceBuilder()
-        ..game = Activity.of(gameName)
-        ..status = status;
-
-  /// Sets bot status to stream type
-  factory PresenceBuilder.streaming({required String streamName, required String streamUrl, UserStatus? status}) =>
-      PresenceBuilder()
-        ..game = Activity.of(streamName, type: ActivityType.streaming, url: streamUrl)
-        ..status = status;
+  /// Sets client status to idle. [since] indicates how long client is afking
+  factory PresenceBuilder.idle({DateTime? since}) =>
+    PresenceBuilder()
+      ..since = since
+      ..afk = true;
 
   @override
   RawApiMap build() => <String, dynamic>{
         "status": (status != null) ? status.toString() : UserStatus.online.toString(),
         "afk": (afk != null) ? afk : false,
-        if (game != null) "game": <String, dynamic>{
-            "name": game!.name,
-            "type": game!.type.value,
-            if (game!.type == ActivityType.streaming) "url": game!.url
-        },
+        "activities": [
+          if (this.activity != null)
+            this.activity!.build(),
+        ],
         "since": (since != null) ? since!.millisecondsSinceEpoch : null
       };
 }

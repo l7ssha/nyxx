@@ -10,43 +10,40 @@ class Activity {
   late final ActivityType type;
 
   /// The game URL, if provided.
-  String? url;
+  late final String? url;
 
   /// Timestamp of when the activity was added to the user's session
   late final DateTime createdAt;
 
   /// Timestamps for start and/or end of the game
-  ActivityTimestamps? timestamps;
+  late final ActivityTimestamps? timestamps;
 
   /// Application id for the game
-  Snowflake? applicationId;
+  late final Snowflake? applicationId;
 
   /// What the player is currently doing
-  String? details;
+  late final String? details;
 
   /// The user's current party status
-  String? state;
+  late final String? state;
 
   /// The emoji used for a custom status
-  ActivityEmoji? customStatusEmoji;
+  late final ActivityEmoji? customStatusEmoji;
 
   /// Information for the current party of the player
-  ActivityParty? party;
+  late final ActivityParty? party;
 
   /// Images for the presence and their hover texts
-  GameAssets? assets;
+  late final GameAssets? assets;
 
   /// Secrets for Rich Presence joining and spectating
-  GameSecrets? secrets;
+  late final GameSecrets? secrets;
 
   /// Whether or not the activity is an instanced game session
-  bool? instance;
+  late final bool? instance;
 
   ///	Activity flags ORd together, describes what the payload includes
-  int? activityFlags;
-
-  /// Makes a new game object.
-  Activity.of(this.name, {this.type = ActivityType.game, this.url});
+  late final int? activityFlags;
 
   Activity._new(RawApiMap raw) {
     this.name = raw["name"] as String;
@@ -58,30 +55,42 @@ class Activity {
 
     if (raw["timestamps"] != null) {
       this.timestamps = ActivityTimestamps._new(raw["timestamps"] as RawApiMap);
+    } else {
+      this.timestamps = null;
     }
 
     if (raw["application_id"] != null) {
-      applicationId = Snowflake(raw["application_id"]);
+      this.applicationId = Snowflake(raw["application_id"]);
+    } else {
+      this.applicationId = null;
     }
 
     if (raw["emoji"] != null) {
       this.customStatusEmoji = ActivityEmoji._new(raw["emoji"] as RawApiMap);
+    } else {
+      this.customStatusEmoji = null;
     }
 
     if (raw["party"] != null) {
-      party = ActivityParty._new(raw["party"] as RawApiMap);
+      this.party = ActivityParty._new(raw["party"] as RawApiMap);
+    } else {
+      this.party = null;
     }
 
     if (raw["assets"] != null) {
-      assets = GameAssets._new(raw["assets"] as RawApiMap);
+      this.assets = GameAssets._new(raw["assets"] as RawApiMap);
+    } else {
+      this.assets = null;
     }
 
     if (raw["secrets"] != null) {
-      secrets = GameSecrets._new(raw["secrets"] as RawApiMap);
+      this.secrets = GameSecrets._new(raw["secrets"] as RawApiMap);
+    } else {
+      this.secrets = null;
     }
 
-    instance = raw["instance"] as bool?;
-    activityFlags = raw["flags"] as int?;
+    this.instance = raw["instance"] as bool?;
+    this.activityFlags = raw["flags"] as int?;
   }
 }
 
@@ -104,7 +113,7 @@ class ActivityEmoji {
   }
 }
 
-///
+/// Timestamp of activity
 class ActivityTimestamps {
   /// DateTime when activity started
   late final DateTime? start;
@@ -125,17 +134,20 @@ class ActivityTimestamps {
 
 /// Represents type of presence activity
 class ActivityType extends IEnum<int> {
-  ///Status type when playing a game
+  /// Status type when playing a game
   static const ActivityType game = ActivityType._create(0);
 
-  ///Status type when streaming a game. Only supports twitch.tv or youtube.com url
+  /// Status type when streaming a game. Only supports twitch.tv or youtube.com url
   static const ActivityType streaming = ActivityType._create(1);
 
-  ///Status type when listening to Spotify
+  /// Status type when listening to Spotify
   static const ActivityType listening = ActivityType._create(2);
 
-  ///Custom status, not supported for bot accounts
+  /// Custom status, not supported for bot accounts
   static const ActivityType custom = ActivityType._create(4);
+
+  /// Competing in something
+  static const ActivityType competing = ActivityType._create(5);
 
   /// Creates [ActivityType] from [value]
   ActivityType.from(int value) : super(value);
@@ -160,17 +172,20 @@ class ActivityParty {
   late final String? id;
 
   /// Current size of party.
-  int? currentSize;
+  late final int? currentSize;
 
   /// Max size of party.
-  int? maxSize;
+  late final int? maxSize;
 
   ActivityParty._new(RawApiMap raw) {
-    id = raw["id"] as String?;
+    this.id = raw["id"] as String?;
 
     if (raw["size"] != null) {
-      currentSize = raw["size"].first as int;
-      maxSize = raw["size"].last as int;
+      this.currentSize = raw["size"].first as int;
+      this.maxSize = raw["size"].last as int;
+    } else {
+      this.currentSize = null;
+      this.maxSize = null;
     }
   }
 }
@@ -190,10 +205,10 @@ class GameAssets {
   late final String? smallText;
 
   GameAssets._new(RawApiMap raw) {
-    largeImage = raw["large_image"] as String?;
-    largeText = raw["large_text"] as String?;
-    smallImage = raw["small_image"] as String?;
-    smallText = raw["small_text"] as String?;
+    this.largeImage = raw["large_image"] as String?;
+    this.largeText = raw["large_text"] as String?;
+    this.smallImage = raw["small_image"] as String?;
+    this.smallText = raw["small_text"] as String?;
   }
 }
 
@@ -209,8 +224,8 @@ class GameSecrets {
   late final String match;
 
   GameSecrets._new(RawApiMap raw) {
-    join = raw["join"] as String;
-    spectate = raw["spectate"] as String;
-    match = raw["match"] as String;
+    this.join = raw["join"] as String;
+    this.spectate = raw["spectate"] as String;
+    this.match = raw["match"] as String;
   }
 }
