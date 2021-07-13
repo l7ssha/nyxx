@@ -14,7 +14,7 @@ SnowflakeEntity getUserToBan(GuildMessage message) {
 // Main function
 void main() {
   // Create new bot instance. Replace string with your token
-  final bot = Nyxx("<TOKEN>", GatewayIntents.none);
+  final bot = Nyxx("<TOKEN>", GatewayIntents.allUnprivileged);
 
   // Listen to ready event. Invoked when bot is connected to all shards. Note that cache can be empty or not incomplete.
   bot.onReady.listen((ReadyEvent e) {

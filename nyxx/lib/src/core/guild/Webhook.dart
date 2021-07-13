@@ -97,11 +97,11 @@ class Webhook extends SnowflakeEntity implements IMessageAuthor {
     }
   }
 
-  /// Executes webhook. Webhooks can send multiple embeds in one messsage using [embeds].
+  /// Executes webhook.
   ///
   /// [wait] - waits for server confirmation of message send before response,
   /// and returns the created message body (defaults to false; when false a message that is not save does not return an error)
-  Future<Message> execute(
+  Future<Message?> execute(
       MessageBuilder builder,
       {bool? wait,
       Snowflake? threadId,

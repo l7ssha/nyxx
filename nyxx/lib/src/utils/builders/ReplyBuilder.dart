@@ -1,7 +1,7 @@
 part of nyxx;
 
 /// Builder for replying to message
-class ReplyBuilder extends Builder{
+class ReplyBuilder extends Builder {
   /// Id of message you reply to
   final Snowflake messageId;
 

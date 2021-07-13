@@ -5,7 +5,7 @@ import "package:nyxx/nyxx.dart";
 // Main function
 void main() {
   // Create new bot instance
-  final bot = Nyxx("<TOKEN>", GatewayIntents.none);
+  final bot = Nyxx("<TOKEN>", GatewayIntents.allUnprivileged);
 
   // Listen to ready event. Invoked when bot started listening to events.
   bot.onReady.listen((ReadyEvent e) {
